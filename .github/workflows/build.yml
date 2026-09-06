@@ -1,0 +1,27 @@
+name: Build macOS App
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: |
+          pip install pyinstaller tkcalendar
+      - name: Build app
+        run: |
+          pyinstaller --onefile --windowed --hidden-import=tkcalendar --name="LessonCounter" lesson_counter.py
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: LessonCounter-Mac
+          path: dist/LessonCounter
+
